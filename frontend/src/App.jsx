@@ -26,11 +26,27 @@ const pageTransitionStyle = `
 
 function Layout() {
   const location = useLocation();
-  const hideNavFooter = ['/auth', '/admin'].includes(location.pathname);
+  const isAuth = location.pathname === '/auth';
+  const hideNavFooter = ['/admin'].includes(location.pathname);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
+
+  // Auth page needs its own full-screen layout (with Navbar but no footer wrapper)
+  if (isAuth) {
+    return (
+      <div className="h-screen flex flex-col overflow-hidden">
+        <style>{pageTransitionStyle}</style>
+        <Navbar />
+        <div className="flex-1 overflow-hidden">
+          <Routes>
+            <Route path="/auth" element={<AuthPage />} />
+          </Routes>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -49,7 +65,7 @@ function Layout() {
           </Routes>
         </div>
       </main>
-      {!hideNavFooter && <Footer />}
+      {(!hideNavFooter && !['/auth'].includes(location.pathname)) && <Footer />}
       <ScrollToTopButton />
     </div>
   );
