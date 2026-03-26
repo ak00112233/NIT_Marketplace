@@ -6,13 +6,13 @@ import { ToastProvider } from './components/Toast';
 import Navbar from './components/Navbar';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import Footer from './components/Footer';
-import HomePage from './pages/HomePage';
-import AuthPage from './pages/AuthPage';
-import BrowsePage from './pages/BrowsePage';
-import SellPage from './pages/SellPage';
-import DashboardPage from './pages/DashboardPage';
-import ProfilePage from './pages/ProfilePage';
-import AdminPage from './pages/AdminPage';
+import HomePage from './pages/home/HomePage';
+import AuthPage from './pages/auth/AuthPage';
+import BrowsePage from './pages/browse/BrowsePage';
+import SellPage from './pages/sell/SellPage';
+import DashboardPage from './pages/dashboard/DashboardPage';
+import ProfilePage from './pages/profile/ProfilePage';
+import AdminPage from './pages/admin/AdminPage';
 
 const pageTransitionStyle = `
   @keyframes pageEnter {
