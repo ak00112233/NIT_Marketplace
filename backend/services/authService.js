@@ -4,9 +4,7 @@ const activityRepository = require('../repositories/activityRepository');
 const generateToken = require('../config/generateToken');
 const bcrypt = require('bcryptjs');
 const { sendOtpEmail } = require('./emailService');
-
-// In-memory OTP store: email -> { otp, expiresAt }
-const otpStore = new Map();
+const Otp = require('../models/Otp');
 
 const authService = {
     /** 
@@ -111,8 +109,16 @@ const authService = {
         }
 
         const otp = String(Math.floor(100000 + Math.random() * 900000)); // 6-digit
-        const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes
-        otpStore.set(email, { otp, expiresAt });
+        const expireAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+
+        // Upsert: replace any existing OTP for this email with the new one.
+        // Using MongoDB instead of in-memory Map so it persists across
+        // Vercel serverless function invocations (cold starts).
+        await Otp.findOneAndUpdate(
+            { email },
+            { otp, expireAt },
+            { upsert: true, new: true }
+        );
 
         // Fire-and-forget — don't block the API response waiting for SMTP
         sendOtpEmail(email, otp).catch((err) =>
@@ -125,13 +131,15 @@ const authService = {
      */
     verifyOtpAndRegister: async (userData, otp) => {
         const email = userData.email ? userData.email.trim() : '';
-        const record = otpStore.get(email);
+
+        // Read the OTP from MongoDB (works across serverless invocations)
+        const record = await Otp.findOne({ email });
 
         if (!record) {
             throw new Error('No OTP found. Please request a new one.');
         }
-        if (Date.now() > record.expiresAt) {
-            otpStore.delete(email);
+        if (Date.now() > record.expireAt.getTime()) {
+            await Otp.deleteOne({ email });
             throw new Error('OTP has expired. Please request a new one.');
         }
         if (record.otp !== String(otp).trim()) {
@@ -139,7 +147,7 @@ const authService = {
         }
 
         // OTP correct — clear it and register
-        otpStore.delete(email);
+        await Otp.deleteOne({ email });
         return authService.register({ ...userData, email });
     },
 };
