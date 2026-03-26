@@ -5,9 +5,6 @@ const getTransporter = () => {
     if (!transporter) {
         transporter = nodemailer.createTransport({
             service: 'gmail',
-            pool: true, 
-            maxConnections: 5,
-            maxMessages: 100,
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS,
@@ -32,7 +29,7 @@ const sendOtpEmail = async (to, otp) => {
             <div style="padding: 32px 28px;">
                 <p style="color: #111827; font-size: 15px; margin: 0 0 8px;">Hi there 👋</p>
                 <p style="color: #6b7280; font-size: 14px; margin: 0 0 28px; line-height: 1.6;">
-                    Use the OTP below to complete your registration. It is valid for <strong>5 minutes</strong>.
+                    Use the OTP below to complete your registration. It is valid for <strong>10 minutes</strong>.
                 </p>
 
                 <div style="background: #f3f4f6; border-radius: 12px; padding: 24px; text-align: center; border: 2px dashed #d1d5db;">
