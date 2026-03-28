@@ -213,19 +213,6 @@ async function updateMe(data, token) {
   return json;
 }
 
-async function changePassword(currentPassword, newPassword, token) {
-  const res = await authFetch(`${API}/api/users/me/password`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ currentPassword, newPassword }),
-  });
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || 'Failed to change password');
-  return json;
-}
 
 async function sendPasswordChangeOtp(currentPassword, token) {
   const res = await authFetch(`${API}/api/auth/send-password-change-otp`, {
@@ -344,7 +331,6 @@ export const api = {
   removeProductImage,
   fetchMe,
   updateMe,
-  changePassword,
   sendPasswordChangeOtp,
   verifyOtpAndChangePassword,
   fetchWishlist,

@@ -11,7 +11,7 @@ const adminSchema = new mongoose.Schema({
         match: [/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Please use a valid email address'] 
     },
     // Admin password (min 12 for high security)
-    password: { type: String, required: true, minlength: 12 },
+    password: { type: String, required: true, minlength: 6 },
     // Admin contact number
     phone: { 
         type: String, 

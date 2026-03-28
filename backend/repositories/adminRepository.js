@@ -16,9 +16,8 @@ const adminRepository = {
         return await Admin.create(data);
     },
 
-    // Update an existing administrator by ID
     update: async (id, data) => {
-        return await Admin.findByIdAndUpdate(id, data, { returnDocument: 'after' });
+        return await Admin.findByIdAndUpdate(id, data, { new: true });
     }
 };
 
