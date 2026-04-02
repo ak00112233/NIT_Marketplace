@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const { sendOtpEmail, sendPasswordChangeOtpEmail } = require('./emailService');
 const Otp = require('../models/Otp');
 
-/** Resolve a user from either students or admins collection */
+// Resolve user from users or admins collection
 const resolveUserById = async (id) => {
     const student = await userRepository.findById(id);
     if (student) return { user: student, isAdmin: false };
@@ -16,10 +16,7 @@ const resolveUserById = async (id) => {
 };
 
 const authService = {
-    /** 
-     * Perform Login logic: 
-     * Checks both students and admins, verifies password, and generates token. 
-     */
+    // Login: check students then admins, verify password, generate token
     login: async (email, password) => {
         const trimmedEmail = email ? email.trim() : '';
         // Check students first, then admins
@@ -47,10 +44,7 @@ const authService = {
         throw new Error('Invalid email or password');
     },
 
-    /** 
-     * Perform Registration logic: 
-     * Validates domain, password length, defaults WhatsApp, and hashes password. 
-     */
+    // Register: validate domain, hash password, create user
     register: async (userData) => {
         let { name, email, password, rollNo, branch, year, hostel, mobileNo, whatsappNo } = userData;
         email = email ? email.trim() : '';

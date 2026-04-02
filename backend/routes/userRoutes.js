@@ -3,25 +3,23 @@ const { getMe, updateMe, changePassword, uploadAvatar, removeAvatar, getActivity
 const { protect } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
-// Get current user's profile information
-router.get('/me',              protect, getMe);
+router.get('/me', protect, getMe);
 
-// Update user contact details (Mobile/WhatsApp)
+// Update user contact details
 router.put('/me',              protect, updateMe);
 
 // Change account password
 router.put('/me/password',     protect, changePassword);
 
-// Upload or update profile avatar image
+// Upload/update avatar
 router.post('/me/avatar',      protect, uploadAvatar);
 
-// Remove profile avatar image
+// Remove avatar
 router.delete('/me/avatar',    protect, removeAvatar);
 
-// Get current user's wishlist items
-router.get('/me/wishlist',     protect, getWishlist);
+router.get('/me/wishlist', protect, getWishlist);
 
-// Get user activity summary (listings, etc.)
+// Get activity summary
 router.get('/activity',        protect, getActivity);
 
 module.exports = router;

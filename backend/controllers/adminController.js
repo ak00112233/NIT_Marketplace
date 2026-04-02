@@ -1,9 +1,7 @@
 const adminService = require('../services/adminService');
 
 const adminController = {
-    /**
-     * Get all products waiting for admin approval.
-     */
+    // Get pending products awaiting approval
     getPendingProducts: async (req, res) => {
         try {
             const products = await adminService.getPendingProducts();
@@ -13,9 +11,7 @@ const adminController = {
         }
     },
 
-    /**
-     * Approve or Reject a specific product listing.
-     */
+    // Approve or reject a product
     approveProduct: async (req, res) => {
         const { approve } = req.body;
         try {
@@ -30,9 +26,7 @@ const adminController = {
         }
     },
 
-    /**
-     * Get list of all registered users for administration.
-     */
+    // Get all registered users
     getUsers: async (req, res) => {
         try {
             const users = await adminService.getUsers();
@@ -42,9 +36,7 @@ const adminController = {
         }
     },
 
-    /**
-     * Get overall marketplace statistics for the admin dashboard.
-     */
+    // Get marketplace statistics
     getStats: async (req, res) => {
         try {
             const stats = await adminService.getStats();
@@ -54,9 +46,7 @@ const adminController = {
         }
     },
 
-    /**
-     * Get all products listed on the platform.
-     */
+    // Get all products on platform
     getAllProducts: async (req, res) => {
         try {
             const products = await adminService.getAllProducts();
@@ -66,9 +56,7 @@ const adminController = {
         }
     },
 
-    /**
-     * Admin tool to force-delete an inappropriate listing.
-     */
+    // Force delete inappropriate listing
     deleteProductAdmin: async (req, res) => {
         try {
             const result = await adminService.deleteProductAdmin(req.params.id, req.user._id);

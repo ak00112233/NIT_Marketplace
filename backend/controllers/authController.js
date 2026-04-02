@@ -1,8 +1,6 @@
 const authService = require('../services/authService');
 
-/**
- * Authenticate student or admin and return a JWT token.
- */
+// Login user
 const login = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -14,9 +12,7 @@ const login = async (req, res) => {
     }
 };
 
-/**
- * Register a new student account.
- */
+// Register new user
 const register = async (req, res) => {
     try {
         const data = await authService.register(req.body);
@@ -26,9 +22,7 @@ const register = async (req, res) => {
     }
 };
 
-/**
- * Send OTP to the provided email (step 1 of sign-up).
- */
+// Send OTP for signup
 const sendOtp = async (req, res) => {
     const { email } = req.body;
     try {
@@ -39,9 +33,7 @@ const sendOtp = async (req, res) => {
     }
 };
 
-/**
- * Verify OTP and register the user (step 2 of sign-up).
- */
+// Verify OTP and register
 const verifyOtpAndRegister = async (req, res) => {
     const { otp, ...userData } = req.body;
     try {
@@ -52,10 +44,7 @@ const verifyOtpAndRegister = async (req, res) => {
     }
 };
 
-/**
- * Send an OTP to the authenticated user's email as step 1 of password change.
- * Verifies the current password before dispatching the OTP.
- */
+// Send OTP for password change
 const sendPasswordChangeOtp = async (req, res) => {
     const { currentPassword } = req.body;
     if (!currentPassword) {
@@ -70,9 +59,7 @@ const sendPasswordChangeOtp = async (req, res) => {
     }
 };
 
-/**
- * Verify the OTP and change the password (step 2 of password change).
- */
+// Verify OTP and change password
 const verifyOtpAndChangePassword = async (req, res) => {
     const { otp, newPassword } = req.body;
     if (!otp || !newPassword) {

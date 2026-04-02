@@ -17,27 +17,18 @@ const upload = multer({
     }
 });
 
-/**
- * Controller for User Profile and Activity related requests.
- * Handles profiles, contact details, passwords, avatars, and wishlists.
- */
+// User controller
 const userController = {
-    /**
-     * GET /api/users/me — Get current user's profile
-    */
+    // Get current user profile
     getMe: async (req, res) => {
         try {
-            // req.user is pre-resolved by the 'protect' middleware 
-            // from either Students or Admins collection.
             res.json(req.user);
         } catch (err) {
             res.status(500).json({ message: err.message });
         }
     },
 
-    /**
-     * PUT /api/users/me — Update changeable contact fields only
-     */
+    // Update user profile
     updateMe: async (req, res) => {
         try {
             const { mobileNo, whatsappNo, secondaryEmail } = req.body;
@@ -57,9 +48,7 @@ const userController = {
         }
     },
 
-    /**
-     * PUT /api/users/me/password — Change password
-     */
+    // Change password
     changePassword: async (req, res) => {
         try {
             const { currentPassword, newPassword } = req.body;
@@ -88,9 +77,7 @@ const userController = {
         }
     },
 
-    /**
-     * POST /api/users/me/avatar — Upload profile image
-     */
+    // Upload user avatar
     uploadAvatar: [
         upload.single('avatar'),
         async (req, res) => {
@@ -102,7 +89,7 @@ const userController = {
                 const userId = req.user._id;
                 const activity = await activityRepository.getOrCreate(userId);
 
-                // Delete previous avatar from Cloudinary if it exists
+                // Delete old avatar from Cloudinary
                 if (activity.img && activity.img.startsWith('http')) {
                     try {
                         const urlParts = activity.img.split('/');
@@ -115,7 +102,7 @@ const userController = {
                 }
 
                 const newImageUrl = req.file.path;
-                // Store new URL in userActivity
+                // Store new image in userActivity
                 await activityRepository.update(userId, { img: newImageUrl });
 
                 res.json({
@@ -129,9 +116,7 @@ const userController = {
         }
     ],
 
-    /**
-     * DELETE /api/users/me/avatar — Remove profile image
-     */
+    // Remove user avatar
     removeAvatar: async (req, res) => {
         try {
             const userId = req.user._id;
@@ -155,9 +140,7 @@ const userController = {
         }
     },
 
-    /**
-     * GET /api/users/me/wishlist — Full product objects for all wishlisted items
-     */
+    // Get user wishlist
     getWishlist: async (req, res) => {
         try {
             const activity = await activityRepository.getOrCreate(req.user._id);
@@ -171,9 +154,7 @@ const userController = {
         }
     },
 
-    /**
-     * GET /api/users/activity — Get current user's activity
-     */
+    // Get user activity
     getActivity: async (req, res) => {
         try {
             const activity = await productService.getUserActivity(req.user._id);

@@ -3,9 +3,7 @@ const productRepository = require('../repositories/productRepository');
 const activityRepository = require('../repositories/activityRepository');
 
 const adminService = {
-    /** 
-     * Get products awaiting approval with seller details attached. 
-     */
+    // Get pending products with seller details
     getPendingProducts: async () => {
         const products = await productRepository.find({ isApproved: false });
         return await Promise.all(products.map(async p => {
@@ -17,21 +15,17 @@ const adminService = {
         }));
     },
 
-    /** 
-     * Approve a listing or permanently delete a rejected one. 
-     */
+    // Approve or reject product
     approveProduct: async (productId, approve, adminId) => {
         if (approve) {
             return await productRepository.update(productId, { isApproved: true, status: 'available', actionByAdmin: adminId });
         } else {
-            // Instead of deleting, we mark it as rejected so the user can see it on their dashboard
+            // Mark as rejected instead of deleting
             return await productRepository.update(productId, { isApproved: false, status: 'rejected_by_admin', actionByAdmin: adminId });
         }
     },
 
-    /** 
-     * Retrieve all users, stripping away passwords. 
-     */
+    // Get all users without passwords
     getUsers: async () => {
         const users = await userRepository.find();
         return users.map(u => {
@@ -41,9 +35,7 @@ const adminService = {
         });
     },
 
-    /** 
-     * Calculate global metrics for the admin dashboard. 
-     */
+    // Get admin dashboard statistics
     getStats: async () => {
         const users = await userRepository.find();
         const products = await productRepository.find({});
@@ -62,12 +54,10 @@ const adminService = {
         };
     },
 
-    /** 
-     * Retrieve every product listing in the system with full seller context. 
-     */
+    // Get all products with seller context
     getAllProducts: async () => {
         const products = await productRepository.find({});
-        // Return newest first
+        // Sort newest first
         products.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         return await Promise.all(products.map(async p => {
             const seller = await userRepository.findById(p.seller);
@@ -78,12 +68,10 @@ const adminService = {
         }));
     },
 
-    /** 
-     * Forcefully change product status to 'deleted_by_admin'. 
-     */
+    // Force delete product by admin
     deleteProductAdmin: async (productId, adminId) => {
         const result = await productRepository.update(productId, { status: 'deleted_by_admin', actionByAdmin: adminId });
-        // Remove from every user's wishlist — product is no longer obtainable
+        // Remove from all wishlists
         await activityRepository.removeFromAllWishlists(productId);
         return result;
     }

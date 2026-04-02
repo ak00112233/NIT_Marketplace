@@ -1,31 +1,28 @@
 const Product = require('../models/Product');
 
-/** Product Repository — Raw Mongoose queries */
+// Product repository: raw Mongoose queries
 const productRepository = {
-    /**
-     * Finds products based on raw filters.
-     * @param {Object} query - Mongoose query object
-     */
+    // Find products by query
     find: async (query) => {
         return await Product.find(query);
     },
 
-    /** Find many products with filtering logic. */
+    // Query products with complex filtering
     query: async (filters = {}) => {
         const { category, minPrice, maxPrice, condition, search, excludeSeller, seller, sellerYear } = filters;
         
         let query = { isApproved: true, status: 'available' };
 
-        // 2. Logic for filtering by seller year
+        // Filter by seller year
         if (sellerYear) {
-            const User = require('../models/User'); // Import on-demand to avoid circular dependency
+            // Avoid circular dependency
             const mongoose = require('mongoose');
             const yearNum = Number(sellerYear);
             
             const sellersInYear = await User.find({ year: yearNum }).select('_id');
             const sellerIds = sellersInYear.map(u => u._id);
 
-            // Consolidate seller filters: exclude, specific, and year
+            // Consolidate seller + year filters
             if (seller) {
                 // Specific seller filtering
                 if (!sellerIds.some(id => id.toString() === seller.toString())) {
@@ -42,7 +39,7 @@ const productRepository = {
                 }
             }
         } else {
-            // No year filter: apply legacy seller logic
+            // No year filter: apply seller logic
             if (excludeSeller) {
                 const mongoose = require('mongoose');
                 query.seller = { $ne: new mongoose.Types.ObjectId(excludeSeller.toString()) };

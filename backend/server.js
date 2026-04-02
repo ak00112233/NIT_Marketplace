@@ -1,8 +1,4 @@
-/**
- * ------------------------------------------------------------------
- * Separate Backend Development Server Entry Point
- * ------------------------------------------------------------------
- */
+// Backend development server entry point
 
 const app = require('./app');
 const dotenv = require('dotenv');

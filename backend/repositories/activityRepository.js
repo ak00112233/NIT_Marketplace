@@ -1,8 +1,8 @@
 const UserActivity = require('../models/UserActivity');
 
-/** Activity Repository — User Activity Data Layer */
+// Activity repository: user activity data access
 const activityRepository = {
-    /** Get the activity record for a user (auto-creates blank entry if missing). */
+    // Get or create activity record
     getOrCreate: async (userId) => {
         let activity = await UserActivity.findById(userId);
         if (!activity) {
@@ -17,28 +17,24 @@ const activityRepository = {
         return activity;
     },
 
-    /** Get ALL activity records. */
+    // Get all activity records
     getAll: async () => {
         return await UserActivity.find({});
     },
 
-    /** Ensure every userId in the provided array has an activity entry. */
+    // Ensure all users have activity entries
     ensureAll: async (userIds) => {
         for (const userId of userIds) {
             await activityRepository.getOrCreate(userId);
         }
     },
 
-    /**
-     * Partially update a user's activity record.
-     * @param {string} userId
-     * @param {Object} patch - e.g. { wishlisted: [...] }
-     */
+    // Update activity record
     update: async (userId, patch) => {
         return await UserActivity.findByIdAndUpdate(userId, patch, { returnDocument: 'after' });
     },
 
-    /** Add a product to a user's listed array (when they create a listing). */
+    // Add product to listed array
     addListed: async (userId, productId) => {
         return await UserActivity.findByIdAndUpdate(
             userId, 
@@ -47,7 +43,7 @@ const activityRepository = {
         );
     },
 
-    /** Mark a product as sold for the seller. */
+    // Mark product as sold
     markSold: async (userId, productId) => {
         return await UserActivity.findByIdAndUpdate(
             userId, 

@@ -3,9 +3,7 @@ const adminRepository = require('../repositories/adminRepository');
 const productRepository = require('../repositories/productRepository');
 
 const userService = {
-    /** 
-     * Get aggregate platform stats for the landing page. 
-     */
+    // Get public platform stats
     getPublicStats: async () => {
         const users = await userRepository.find();
         const products = await productRepository.find({ isApproved: true });
@@ -16,18 +14,14 @@ const userService = {
         };
     },
 
-    /** 
-     * Retrieve a user's database document by its ID. 
-     */
+    // Get user document by ID (from students or admins)
     getUserById: async (id) => {
         const student = await userRepository.findById(id);
         if (student) return student;
         return await adminRepository.findById(id);
     },
 
-    /** 
-     * Update user details (Mobile, WhatsApp, or Password). 
-     */
+    // Update user profile data
     updateUserProfile: async (userId, profileData) => {
         const student = await userRepository.update(userId, profileData);
         if (student) return student;

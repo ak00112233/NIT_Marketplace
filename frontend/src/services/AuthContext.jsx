@@ -1,36 +1,20 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 
-/**
- * AuthContext — Global Login State Manager
- * ─────────────────────────────────────────
- * This context answers the question: "Who is currently logged in?"
- *
- * It stores the logged-in user's data (name, email, token, role, etc.)
- * in both React state AND localStorage so the login persists after a page refresh.
- *
- * HOW TO USE in any component:
- *   const { user, loginUser, logoutUser, updateUser } = useAuth();
- *
- *   user          → null if not logged in, or: { _id, name, email, role, token, profileImage }
- *   loginUser()   → call after a successful login API response
- *   logoutUser()  → call when user clicks "Log out"
- *   updateUser()  → call to patch specific fields (e.g. new profile photo URL)
- */
+// AuthContext: Global login state manager
 
 // Create the context object — starts as null, will be filled by AuthProvider
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  // Initialize user from localStorage so the session survives a page refresh.
-  // The () => { } form is a "lazy initializer" — runs once on mount, not on every render.
+  // Initialize user from localStorage
   const [user, setUser] = useState(() => {
     const info = localStorage.getItem('userInfo');
-    return info ? JSON.parse(info) : null; // parse saved JSON, or start as null
+    return info ? JSON.parse(info) : null;
   });
 
-  // Save user data to localStorage + React state when logging in
+  // Save user data to localStorage and React state
   const loginUser = (data) => {
-    localStorage.setItem('userInfo', JSON.stringify(data)); // persist across refreshes
+    localStorage.setItem('userInfo', JSON.stringify(data));
     setUser(data);
   };
 
@@ -40,11 +24,9 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  // Merge a partial update into the existing user object.
-  // Useful when only one field changes (e.g. profile photo after upload).
-  // Example: updateUser({ profileImage: 'https://...' })
+  // Merge partial update into user object
   const updateUser = (data) => {
-    const merged = { ...user, ...data }; // keep existing fields, overwrite changed ones
+    const merged = { ...user, ...data };
     localStorage.setItem('userInfo', JSON.stringify(merged));
     setUser(merged);
   };
@@ -54,10 +36,10 @@ export function AuthProvider({ children }) {
     const handleStorageChange = (e) => {
       if (e.key === 'userInfo') {
         if (!e.newValue) {
-          // If userInfo is cleared in another tab, log out here too
+          // If userInfo is cleared in another tab, logout
           setUser(null);
         } else {
-          // If userInfo is updated or logged in in another tab, sync here too
+          // If userInfo updated in another tab, sync here
           try {
             setUser(JSON.parse(e.newValue));
           } catch (err) {
@@ -71,7 +53,7 @@ export function AuthProvider({ children }) {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  // Provide the user state and all action functions to every child component
+  // Provide auth state and functions to children
   return (
     <AuthContext.Provider value={{ user, loginUser, logoutUser, updateUser }}>
       {children}

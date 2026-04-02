@@ -7,11 +7,11 @@ export function getOptimizedImageUrl(url, width = 400) {
   return url;
 }
 
-// Returns the original Cloudinary image without any transformation params.
+// Get original Cloudinary image without transformations
 export function getOriginalImageUrl(url) {
   if (!url) return '';
   if (url.includes('cloudinary.com') && url.includes('/upload/')) {
-    // Strip any transformation segment like /upload/w_400,q_auto,f_auto/ → /upload/
+    // Remove transformation params
     return url.replace(/\/upload\/[^/]+\//, '/upload/');
   }
   return url;

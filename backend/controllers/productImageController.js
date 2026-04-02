@@ -15,9 +15,7 @@ const upload = multer({
 });
 
 const productImageController = {
-    /**
-     * POST /api/products/:id/image — Upload or replace product image.
-     */
+    // Upload product image
     uploadImage: [
         upload.single('image'),
         async (req, res) => {
@@ -32,11 +30,8 @@ const productImageController = {
                 if (product.seller.toString() !== req.user._id.toString())
                     return res.status(403).json({ message: 'Unauthorized: not your listing' });
 
-                // Delete old image from Cloudinary if it exists
+                // Delete old image from Cloudinary if exists
                 if (product.img && product.img.startsWith('http')) {
-                    // Extract public_id from URL if we were storing URLs
-                    // However, it's safer to store the public_id in the DB.
-                    // For now, let's assume we store the URL.
                     try {
                         const urlParts = product.img.split('/');
                         const fileName = urlParts[urlParts.length - 1].split('.')[0];
@@ -47,7 +42,7 @@ const productImageController = {
                     }
                 }
 
-                // Cloudinary stores the URL in req.file.path
+                // Cloudinary URL stored in req.file.path
                 const newImageUrl = req.file.path;
                 await productRepository.update(productId, { img: newImageUrl });
 
@@ -62,9 +57,7 @@ const productImageController = {
         }
     ],
 
-    /**
-     * DELETE /api/products/:id/image — Remove product image.
-     */
+    // Remove product image
     removeImage: async (req, res) => {
         try {
             const productId = req.params.id;

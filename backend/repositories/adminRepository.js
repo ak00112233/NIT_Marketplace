@@ -1,17 +1,17 @@
 const Admin = require('../models/Admin');
 
 const adminRepository = {
-    // Find a single administrator by general query
+    // Find admin by query
     findOne: async (query) => {
         return await Admin.findOne(query);
     },
 
-    // Get an admin by their MongoDB ID
+    // Find admin by ID
     findById: async (id) => {
         return await Admin.findById(id);
     },
 
-    // Create a new administrator account (rarely used)
+    // Create admin
     create: async (data) => {
         return await Admin.create(data);
     },

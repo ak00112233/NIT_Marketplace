@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-    // Owner of the listing
     seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     title: { type: String, required: true, minlength: 2, maxlength: 100 },
     description: { type: String, required: true, minlength: 3, maxlength: 1000 },
@@ -16,17 +15,14 @@ const productSchema = new mongoose.Schema({
         required: true, 
         enum: ["New", "Used", "Damaged", "Lightly Used"] 
     },
-    location: { type: String, default: 'Campus' }, // Default for college marketplace
-    // Moderation status: listable on marketplace only if approved
+    location: { type: String, default: 'Campus' },
     isApproved: { type: Boolean, default: false },
     status: { 
         type: String, 
         default: 'available', 
         enum: ["available", "sold", "reserved", "deleted_by_admin", "rejected_by_admin"] 
     },
-    // URL for Cloudinary image
     img: { type: String, default: null },
-    // Admin who took the last action (approve/reject/delete)
     actionByAdmin: { type: mongoose.Schema.Types.ObjectId, default: null }
 }, { timestamps: true });
 

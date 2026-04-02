@@ -3,27 +3,18 @@ const productRepository = require('../repositories/productRepository');
 const activityRepository = require('../repositories/activityRepository');
 const userService = require('./userService');
 
-/**
- * Product Service — Business Logic Layer
- * =======================================
- * Responsibilities: sorting, pagination, seller info resolution,
- * authorization checks, and wishlist management.
- */
+// Product service: querying, sorting, pagination, wishlist
 const productService = {
-    /**
-     * Handles complex querying, sorting, pruning, and pagination.
-     */
+    // Query products with filtering, sorting, pagination
     queryProducts: async (params) => {
         const { filters = {}, sort = 'newest', fields = [], page = 1, limit = 12 } = params;
 
-        // 1. Fetch raw data from repository
+        // Fetch raw data from repository
         const repoResult = await productRepository.query(filters);
         let products = repoResult.products || [];
         const repoDebug = repoResult._debug || {};
 
-        // 2. Apply Sorting (Sorting is now handled in query, but we can refine here if needed)
-        // For convenience, we'll keep the JS sorting if complex logic is needed, 
-        // but Mongoose is faster. We'll stick to JS for now to preserve your logic exactly.
+        // Apply sorting
         if (sort === 'price_low') {
             products.sort((a, b) => a.price - b.price);
         } else if (sort === 'price_high') {
@@ -35,11 +26,11 @@ const productService = {
 
         const totalItems = products.length;
 
-        // 3. Apply Pagination
+        // Apply pagination
         const startIndex = (Number(page) - 1) * Number(limit);
         const paginatedProducts = products.slice(startIndex, startIndex + Number(limit));
 
-        // 4. Resolve Seller and Prune Fields
+        // Resolve seller info and prune fields
         const processedProducts = await Promise.all(paginatedProducts.map(async p => {
             let sellerInfo = null;
             if (fields.length === 0 || fields.includes('seller')) {
@@ -71,7 +62,7 @@ const productService = {
                     }
                 });
             } else {
-                // Mongoose documents need to be converted to plain objects
+                // Include all fields
                 const pObj = p.toObject ? p.toObject() : p;
                 Object.assign(result, pObj);
                 result.seller = sellerInfo;
@@ -88,20 +79,17 @@ const productService = {
         };
     },
 
-    /** 
-     * List a new product for sale: 
-     * Attaches seller ID, initializes status, and tracks in activity. 
-     */
+    // Create product: initialize status, track in activity
     createProduct: async (userId, productData) => {
         const data = {
             ...productData,
             seller: userId,
-            isApproved: false, // Moderated by admin
+            isApproved: false,
             status: 'available'
         };
         const product = await productRepository.create(data);
 
-        // Track in user activity
+        // Track in activity
         await activityRepository.addListed(userId, product._id);
 
         return product;

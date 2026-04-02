@@ -1,10 +1,7 @@
-/**
- * Unified API Service — React version.
- * Mirrors the original apiService.js endpoints exactly.
- */
+// API service with endpoints mirroring backend
 
 const rawApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-const API = rawApiUrl.replace(/\/$/, ''); // Remove trailing slash to prevent double-slash redirect issues
+const API = rawApiUrl.replace(/\/$/, ''); // Remove trailing slash
 
 function getUserInfo() {
   const info = localStorage.getItem('userInfo');
@@ -25,7 +22,7 @@ async function authFetch(url, options = {}) {
   return res;
 }
 
-// ─── AUTH ───
+// AUTH endpoints
 async function login(email, password) {
   const res = await fetch(`${API}/api/auth/login`, {
     method: 'POST',
@@ -75,7 +72,7 @@ function logout() {
   window.location.href = '/auth';
 }
 
-// ─── PRODUCTS ───
+// PRODUCTS endpoints
 async function queryProducts(payload) {
   const userInfo = getUserInfo();
   const headers = { 'Content-Type': 'application/json' };

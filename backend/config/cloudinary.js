@@ -15,7 +15,6 @@ const productStorage = new CloudinaryStorage({
   params: {
     folder: 'nit_marketplace/products',
     allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
-    // Removed fixed transformation to store original quality and format
   },
 });
 

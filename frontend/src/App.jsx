@@ -33,7 +33,7 @@ function Layout() {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // Auth page needs its own full-screen layout (with Navbar but no footer wrapper)
+  // Auth page needs full-screen layout
   if (isAuth) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">

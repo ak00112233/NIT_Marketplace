@@ -1,19 +1,14 @@
 const productService = require('../services/productService');
 const userService = require('../services/userService');
 
-/**
- * Controller for product-related HTTP requests.
- */
+// Product controller
 const productController = {
-    /** 
-     * Search and Filter Products 
-     * Supports optional authentication to exclude user's own products 
-     */
+    // Search and filter products
     queryProducts: async (req, res, next) => {
         try {
             if (req.user) {
                 req.body.filters = req.body.filters || {};
-                // Only exclude if NOT explicitly filtering for a seller
+                // Exclude user's own products unless filtering for specific seller
                 if (!req.body.filters.seller) {
                     req.body.filters.excludeSeller = req.user._id;
                 }
@@ -25,9 +20,7 @@ const productController = {
         }
     },
 
-    /** 
-     * Add or Remove Product from User Wishlist 
-     */
+    // Add/remove product from wishlist
     syncWishlist: async (req, res, next) => {
         try {
             const { productId, isAdded } = req.body;
@@ -38,9 +31,7 @@ const productController = {
         }
     },
 
-    /** 
-     * List a New Product for Sale 
-     */
+    // Create new product listing
     createProduct: async (req, res, next) => {
         try {
             const product = await productService.createProduct(req.user._id, req.body);
@@ -50,9 +41,7 @@ const productController = {
         }
     },
 
-    /** 
-     * Get Detailed Information for a Single Product 
-     */
+    // Get product by ID
     getProductById: async (req, res) => {
         try {
             const product = await productService.getProductById(req.params.id);
@@ -66,9 +55,7 @@ const productController = {
         }
     },
 
-    /** 
-     * Get All Products Listed by the Current User 
-     */
+    // Get user's products
     getMyProducts: async (req, res) => {
         try {
             const products = await productService.getUserProducts(req.user._id);

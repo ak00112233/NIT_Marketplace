@@ -3,22 +3,22 @@ const { getPendingProducts, approveProduct, getUsers, getStats, getAllProducts, 
 const { protect, admin } = require('../middlewares/authMiddleware');
 const router = express.Router();
 
-// Fetch listings that require admin approval
+// Get pending products
 router.get('/pending', protect, admin, getPendingProducts);
 
-// Get counts of users, products, etc.
+// Get stats
 router.get('/stats', protect, admin, getStats);
 
-// Approve a product listing
+// Approve product
 router.put('/approve/:id', protect, admin, approveProduct);
 
-// Retrieve all registered users
+// Get users
 router.get('/users', protect, admin, getUsers);
 
-// Retrieve all product listings (all states)
+// Get all products
 router.get('/products', protect, admin, getAllProducts);
 
-// Delete an inappropriate listing
+// Delete product
 router.delete('/products/:id', protect, admin, deleteProductAdmin);
 
 module.exports = router;

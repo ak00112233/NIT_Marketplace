@@ -1,27 +1,27 @@
 const User = require('../models/User');
 
 const userRepository = {
-    // Fetch multiple users matching a query
+    // Find multiple users
     find: async (query = {}) => {
         return await User.find(query);
     },
 
-    // Fetch a single user by general query
+    // Find single user
     findOne: async (query) => {
         return await User.findOne(query);
     },
 
-    // Fetch a single user by MongoDB ID
+    // Find user by ID
     findById: async (id) => {
         return await User.findById(id);
     },
 
-    // Create a new user record
+    // Create new user
     create: async (data) => {
         return await User.create(data);
     },
 
-    // Update an existing user by ID
+    // Update user
     update: async (id, data) => {
         return await User.findByIdAndUpdate(id, data, { returnDocument: 'after' });
     }

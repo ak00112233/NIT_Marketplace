@@ -2,15 +2,13 @@ const jwt = require('jsonwebtoken');
 const userRepository = require('../repositories/userRepository');
 const adminRepository = require('../repositories/adminRepository');
 
-/**
- * Resolve a user by ID from either students or admins collection.
- */
+// Resolve user from users or admins collection
 const resolveUser = async (id) => {
     const user = await userRepository.findById(id);
     if (user) return user;
     const adminUser = await adminRepository.findById(id);
     if (adminUser) {
-        // Admin model has no 'role' field, so we attach it manually
+        // Attach role field for admin
         const adminObj = adminUser.toObject ? adminUser.toObject() : { ...adminUser };
         adminObj.role = 'admin';
         return adminObj;
@@ -18,11 +16,7 @@ const resolveUser = async (id) => {
     return null;
 };
 
-/** 
- * Enforce Authentication:
- * Verifies JWT token and attaches user object (without password) to req.user.
- * Rejects request with 401 if token is missing or invalid.
- */
+// Verify JWT token and attach user to req.user (without password)
 const protect = async (req, res, next) => {
     let token;
 
@@ -54,11 +48,7 @@ const protect = async (req, res, next) => {
     }
 };
 
-/** 
- * Enforce Admin Role:
- * Ensures the authenticated user has the 'admin' role.
- * Rejects request with 401 if user is not an admin.
- */
+// Require admin role
 const admin = (req, res, next) => {
     if (req.user && req.user.role === 'admin') {
         next();
@@ -67,12 +57,7 @@ const admin = (req, res, next) => {
     }
 };
 
-/** 
- * Optional Authentication:
- * If a valid token exists, attaches user object to req.user.
- * Does NOT reject if token missing or invalid; just continues without req.user.
- * Useful for tailoring responses for logged-in vs guest users.
- */
+// Optional authentication: attach user if valid token exists, otherwise continue
 const optionalAuth = async (req, res, next) => {
     if (
         req.headers.authorization &&
@@ -88,7 +73,7 @@ const optionalAuth = async (req, res, next) => {
                 req.user = userWithoutPassword;
             }
         } catch (error) {
-            // Ignore errors for optional auth
+            // Ignore token errors for optional auth
         }
     }
     next();
