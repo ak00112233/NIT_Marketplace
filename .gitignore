@@ -21,6 +21,12 @@ tmp/
 *.log
 npm-debug.log*
 
+# Document files
+SecondHand_Marketplace_NIT_KKR.pdf
+SecondHand_Marketplace_NIT_KKR.pptx
+siteLInk.txt
+gitHubLink.txt
+
 # VS Code / IDE Specific (Prevents uploading your personal editor settings to GitHub)
 .vscode/
 .idea/
